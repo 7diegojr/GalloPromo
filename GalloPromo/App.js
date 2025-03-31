@@ -51,8 +51,21 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#edf1f4',
   },
+
+  TitleBox: {
+    alignItems: "center",
+    justifyContent: 'flex-end',
+    height:100,
+    backgroundColor:'#edf1f4',
+    borderBottomStartRadius: 25,
+    borderBottomEndRadius:25,
+  },
+  titleText: {
+    color:'#edf1f4',
+    fontSize:28,
+    fontWeight:'bold',
+    marginBottom:20,
+  }
 });
