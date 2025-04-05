@@ -1,76 +1,65 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View, TextInput, Touchable, TouchableOpacity, Keyboard } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Image } from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { Image } from 'expo-image';
 
 export default function App() {
-  const [height, setHeight] = useState(null);
-  const [weight, setWeight] = useState(null);
-  const [imc, setDesc] = useState(null);
-  const [textButton, setTextButton] = useState("Calcular");
-  const [messageImc, setMessageImc] = useState("Preencha o peso e altura.");
+  const [preco, setPreco] = useState(null);
+  const [precoInicial, setPrecoInicial] = useState(null);
+  const [porcent, setPorcent] = useState(null);
+  const [ValorF, setValorF] = useState(null);
+  const [textButton, setTextButton] = useState("% Calcular");
+  const [messageValorF, setMessageValorF] = useState(null);
 
-  function imcCalculator() {
-    //Preço / altura ** 2
-    setDesc((weight / height ** 2).toFixed(2))
+  function ValorFCalculator() {
+    // preço * (1-(porcentagemDesc/100))
+    setValorF((preco * (1-(porcent/100))).toFixed(2))
   }
 
-  function validateImc() {
-    if (weight != null && height != null)
+  function validateValorF() {
+    if (porcent != null && preco != null)
     {
       Keyboard.dismiss();
-      imcCalculator();
-      setHeight(null);
-      setWeight(null);
-      setTextButton("Calcular novamente.");
-      setMessageImc("O valor:");
+      ValorFCalculator();
+      setPrecoInicial(preco);
+      setPreco(null);
+      setPorcent(null);
+      setTextButton("% Calcular novamente.");
+      setMessageValorF("O preço do produto será:");
       return;  
     }
-    setDesc(null);
-    setTextButton("Calcular");
-    setMessageImc("Preencha o peso e altura.")
+    setValorF(null);
+    setTextButton("% Calcular");
+    setMessageValorF(null);
   }
 
   return (
-
-
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.titleBox}>
+      <Image style={styles.img} source={require('./assets/gallogo.png')}/>
         <Text style={styles.titleText}>Gallo Promo</Text>
-        <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require('./img/Gallogo.png')}
-        placeholder={{ blurhash }}
-        contentFit="cover"
-        transition={1000}
-      />
-    </View>
       </SafeAreaView>
 
-      
-
       <View style={styles.content}>
-      <Text style={styles.subTitle}>Calculadora de Promoções</Text>
+      <Text style={styles.subTitle} numberOfLines={1}>Calculadora de Promoções</Text>
 
       <View>
         <Text style={styles.label}>Preço do Produto:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setHeight}
-          value={height ?? ''}
+          onChangeText={setPreco}
+          value={preco ?? ''}
           placeholder='Digite o preço...'
           keyboardType='numeric'
         />
       </View>
 
       <View style={{ marginTop:25 }}>
-        <Text style={styles.label}>Valor do Desconto:</Text>
+        <Text style={styles.label}>Porcentagem do Desconto:</Text>
         <TextInput
           style={styles.input}
-          onChangeText={setWeight}
-          value={weight ?? ''}
+          onChangeText={setPorcent}
+          value={porcent ?? ''}
           placeholder='Digite o desconto...'
           keyboardType='numeric'
         />
@@ -78,16 +67,19 @@ export default function App() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => validateImc()}
+        onPress={() => validateValorF()}
        >
         <Ionicons name={"calculator-sharp"} size={24} color={"#edf2f4"} />
         <Text style={styles.text}>{textButton}</Text>
       </TouchableOpacity>
 
-      <View style={styles.imcContainer}>
-        <Text style={styles.imcText}>{messageImc}</Text>
-        <Text style={styles.imcResult}>{imc}</Text>
-      </View>
+      {ValorF && (
+        <View style={styles.DescContainer}>
+          <Text style={styles.ValorFText}>{messageValorF}</Text>
+          <Text style={styles.DescValorF}>{`R$ ${ValorF}`}</Text>
+          <Text style={styles.DescDesconto}>{`Desconto: R$ ${(precoInicial - ValorF).toFixed(2)}`}</Text>
+        </View>
+      )}
 
       </View>
 
@@ -102,34 +94,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#edf2f4',
   },
   titleBox: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: 100,
-    backgroundColor: '#221f62',
+    justifyContent: 'center',
+    height:180,
+    backgroundColor: '#162a7d',
     borderBottomStartRadius: 25,
     borderBottomEndRadius: 25,
   },
   titleText: {
     color: '#edf2f4',
-    fontSize: 28,
+    fontSize: 38,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 40,
   },
   content: {
     flex: 1,
-    padding: 40,
+    padding: 30,
     width: '100%',
-    backgroundColor: '#edf2f4'
+    backgroundColor: '#ededed',
   },
   subTitle: {
-    fontSize: 23,
+    fontSize: 27,
     textAlign: 'center',
-    color: '#221f62',
+    color: '#162a7d',
     fontWeight: 'bold',
-    marginBottom: 40
+    marginBottom: 28,
+    marginTop:7,
   },
   label: {
-    color: '#221f62',
+    color: '#162a7d',
     fontSize: 18,
     fontWeight: '500',
   },
@@ -137,10 +132,12 @@ const styles = StyleSheet.create({
     height: 48,
     width: '100%',
     fontSize: 18,
-    borderColor: '#221f62',
+    borderColor: '#162a7d',
     borderWidth: 2,
     borderRadius: 18,
     marginVertical: 7,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 10,
   },
   button: {
     width: '100%',
@@ -148,31 +145,50 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#cf2323',
+    backgroundColor: '#d61b1b',
     borderRadius: 15,
     marginTop: 40,
-    marginBottom: 10
+    marginBottom: 10,
   },
   text: {
     color: '#edf2f4',
     fontSize: 24,
     fontWeight: '600',
-    marginLeft: 5
+    marginLeft: 5,
+    fontWeight: 'bold',
   },
-  imcContainer: {
-    flex: 1,
+  DescContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
-  imcResult: {
+  DescValorF: {
     fontSize: 48,
-    color: '#cf2323',
-    fontWeight: 'bold'
+    color: '#d61b1b',
+    fontWeight: 'bold',
+    borderRadius: 10,
+    borderColor: '#162a7d',
+    borderWidth: 2,
+    padding: 5,
+    marginTop: 10,
+    backgroundColor: '#ffffff',
   },
-  imcText: {
+  ValorFText: {
     fontSize: 18,
-    color: '#221f62',
-    fontWeight: 'bold'
-  }
+    color: '#162a7d',
+    fontWeight: 'bold',
+    marginTop:24,
+  },
+  img: {
+    width: 120,
+    height: 120,
+    marginRight: 10,
+    marginTop: 22,
+  },
+  DescDesconto: {
+    fontSize: 17,
+    color: '#d61b1b',
+    fontWeight: 400,
+    marginTop: 5,
+  },
 });
