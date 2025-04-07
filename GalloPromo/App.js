@@ -77,7 +77,7 @@ export default function App() {
         <View style={styles.DescContainer}>
           <Text style={styles.ValorFText}>{messageValorF}</Text>
           <Text style={styles.DescValorF}>{`R$ ${ValorF}`}</Text>
-          <Text style={styles.DescDesconto}>{`Desconto: R$ ${(precoInicial - ValorF).toFixed(2)}`}</Text>
+          <Text style={styles.DescDesconto}>{`Valor descontado: R$ ${(precoInicial - ValorF).toFixed(2)}`}</Text>
         </View>
       )}
 
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ededed',
   },
   subTitle: {
-    fontSize: 27,
+    fontSize: 24,
     textAlign: 'center',
     color: '#162a7d',
     fontWeight: 'bold',
